@@ -291,6 +291,7 @@ body{background:var(--bg);font-family:'Nunito',sans-serif;min-height:100vh;color
   <div class="bn-item" onclick="showToast('🤝','Referrals')"><div class="bn-icon">🤝</div><div class="bn-label">Referral</div></div>
   <div class="bn-item" onclick="showToast('👤','Profile')"><div class="bn-icon">👤</div><div class="bn-label">Profile</div></div>
 </div>
+console.log("JS WORKING");
 
 <script>
 // ── DATA ──────────────────────────────────
@@ -584,8 +585,20 @@ function updateStats() {
 
 // ── UTILS ─────────────────────────────────
 function copyRef() {
-  navigator.clipboard.writeText('https://winhub.in/ref/WINREF-AK21').catch(() => {});
-  showToast('📋', 'Referral link copied to clipboard!');
+  const text = 'https://winhub.in/ref/WINREF-AK21';
+
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text);
+  } else {
+    const input = document.createElement('input');
+    input.value = text;
+    document.body.appendChild(input);
+    input.select();
+    document.execCommand('copy');
+    document.body.removeChild(input);
+  }
+
+  showToast('📋', 'Referral link copied!');
 }
 
 let toastTimer;
@@ -598,8 +611,10 @@ function showToast(icon, msg) {
 }
 
 // ── INIT ──────────────────────────────────
-renderPlans(PLANS);
-updateStats();
+window.onload = function() {
+  renderPlans(PLANS);
+  updateStats();
+}
 </script>
 </body>
 </html>
