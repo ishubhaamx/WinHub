@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>WinHub — Investment Plans</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+:root{
+  --blue:#1a6fff;--blue2:#0d53d4;--blue-light:#e8f0ff;
+  --green:#00b87c;--green-light:#e6f9f3;
+  --gold:#f5a623;--gold-light:#fff8ec;
+  --purple:#7c3aed;--purple-light:#f3eeff;
+  --red:#e84040;--red-light:#fff0f0;
+  --teal:#0891b2;--teal-light:#e0f7fb;
+  --bg:#f0f4ff;--white:#ffffff;
+  --text:#111827;--text2:#6b7280;--text3:#9ca3af;
+  --border:#e5e7eb;
+  --radius:18px;--radius-sm:12px;
+}
+body{background:var(--bg);font-family:'Nunito',sans-serif;min-height:100vh;color:var(--text);overflow-x:hidden;}
+
+/* TOP BAR */
+.topbar{background:var(--blue);padding:16px 20px 14px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+.topbar-title{color:#fff;font-size:18px;font-weight:800;letter-spacing:-.3px;}
+.topbar-sub{color:rgba(255,255,255,.75);font-size:11px;font-weight:600;margin-top:1px;}
+.wallet-chip{background:rgba(255,255,255,.18);border-radius:20px;padding:7px 14px;display:flex;align-items:center;gap:6px;cursor:pointer;}
+.wallet-chip span{color:#fff;font-size:13px;font-weight:800;}
+.wallet-chip .wlbl{font-size:9px;color:rgba(255,255,255,.7);display:block;line-height:1;}
+
+/* BALANCE BANNER */
+.balance-banner{background:linear-gradient(135deg,var(--blue),var(--blue2));padding:20px;margin:16px;border-radius:var(--radius);box-shadow:0 8px 24px rgba(26,111,255,.25);position:relative;overflow:hidden;}
+.balance-banner::before{content:'';position:absolute;top:-30px;right:-30px;width:140px;height:140px;background:rgba(255,255,255,.07);border-radius:50%;}
+.balance-banner::after{content:'';position:absolute;bottom:-20px;right:40px;width:80px;height:80px;background:rgba(255,255,255,.05);border-radius:50%;}
+.bb-label{color:rgba(255,255,255,.75);font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
+.bb-amount{color:#fff;font-size:34px;font-weight:900;letter-spacing:-1px;margin:4px 0;}
+.bb-sub{color:rgba(255,255,255,.7);font-size:12px;font-weight:600;}
+.bb-row{display:flex;gap:16px;margin-top:16px;}
+.bb-stat{flex:1;background:rgba(255,255,255,.12);border-radius:10px;padding:10px 12px;}
+.bb-stat-val{color:#fff;font-size:16px;font-weight:800;}
+.bb-stat-lbl{color:rgba(255,255,255,.65);font-size:10px;font-weight:600;margin-top:1px;}
+
+/* SECTION TITLE */
+.sec-title{padding:0 20px;margin-bottom:12px;}
+.sec-title h2{font-size:18px;font-weight:800;color:var(--text);}
+.sec-title p{font-size:12px;color:var(--text2);margin-top:2px;}
+
+/* PLAN CARDS */
+.plans-container{padding:0 16px;display:flex;flex-direction:column;gap:14px;padding-bottom:100px;}
+
+.plan-card{background:var(--white);border-radius:var(--radius);overflow:hidden;box-shadow:0 2px 16px rgba(0,0,0,.06);border:2px solid transparent;transition:all .25s;position:relative;}
+.plan-card.popular{border-color:var(--blue);}
+.plan-card.premium{border-color:var(--gold);}
+
+.popular-badge{position:absolute;top:14px;right:14px;background:var(--blue);color:#fff;font-size:9px;font-weight:800;padding:3px 10px;border-radius:20px;letter-spacing:.5px;}
+.premium-badge{position:absolute;top:14px;right:14px;background:linear-gradient(135deg,var(--gold),#e8870a);color:#fff;font-size:9px;font-weight:800;padding:3px 10px;border-radius:20px;letter-spacing:.5px;}
+
+.plan-header{padding:18px 18px 14px;}
+.plan-tag{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;margin-bottom:10px;}
+.plan-name{font-size:17px;font-weight:900;color:var(--text);letter-spacing:-.3px;}
+.plan-headline{font-size:22px;font-weight:900;color:var(--text);line-height:1.2;margin-top:6px;}
+.plan-headline span{color:var(--blue);}
+
+.plan-divider{height:1px;background:var(--border);margin:0 18px;}
+
+.plan-features{padding:14px 18px;}
+.feat-row{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;}
+.feat-row:last-child{margin-bottom:0;}
+.feat-icon{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
+.feat-text{flex:1;}
+.feat-label{font-size:13px;font-weight:700;color:var(--text);}
+.feat-sub{font-size:11px;color:var(--text2);margin-top:1px;}
+
+.plan-referral{margin:0 18px 14px;background:var(--green-light);border-radius:10px;padding:12px;display:flex;align-items:center;gap:10px;}
+.ref-icon{width:36px;height:36px;background:var(--green);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.ref-text .ref-main{font-size:13px;font-weight:800;color:var(--green);}
+.ref-text .ref-sub{font-size:10px;color:var(--text2);margin-top:1px;}
+
+.plan-footer{padding:0 18px 18px;}
+.btn-activate{width:100%;background:var(--blue);color:#fff;border:none;padding:15px;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;letter-spacing:.2px;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;}
+.btn-activate:hover{background:var(--blue2);transform:translateY(-1px);box-shadow:0 6px 20px rgba(26,111,255,.35);}
+.btn-activate:active{transform:translateY(0);}
+.btn-activate.gold-btn{background:linear-gradient(135deg,var(--gold),#e8870a);box-shadow:0 6px 20px rgba(245,166,35,.3);}
+.btn-activate.gold-btn:hover{box-shadow:0 8px 24px rgba(245,166,35,.45);}
+
+.plan-disclaimer{text-align:center;font-size:9px;color:var(--text3);margin-top:10px;line-height:1.5;padding:0 4px;}
+
+/* COLOR VARIANTS */
+.tag-starter{background:var(--blue-light);color:var(--blue);}
+.tag-basic{background:var(--green-light);color:var(--green);}
+.tag-growth{background:var(--teal-light);color:var(--teal);}
+.tag-pro{background:var(--purple-light);color:var(--purple);}
+.tag-elite{background:var(--gold-light);color:var(--gold);}
+.tag-ultra{background:linear-gradient(135deg,#fff0f8,#ffe8f0);color:#d63384;}
+
+.fi-blue{background:var(--blue-light);}
+.fi-green{background:var(--green-light);}
+.fi-teal{background:var(--teal-light);}
+.fi-purple{background:var(--purple-light);}
+.fi-gold{background:var(--gold-light);}
+.fi-pink{background:#fff0f8;}
+
+/* DURATION BAR */
+.duration-bar{margin:0 18px 14px;}
+.dur-label{font-size:10px;font-weight:700;color:var(--text2);margin-bottom:6px;display:flex;justify-content:space-between;}
+.dur-track{height:6px;background:var(--border);border-radius:3px;overflow:hidden;}
+.dur-fill{height:100%;border-radius:3px;background:var(--blue);transition:width 1s ease;}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:999;display:none;align-items:flex-end;justify-content:center;backdrop-filter:blur(4px);}
+.modal-overlay.open{display:flex;}
+.modal-box{background:var(--white);border-radius:24px 24px 0 0;width:100%;max-width:480px;padding:28px 24px 40px;animation:slideUp .35s cubic-bezier(.34,1.4,.64,1) both;}
+@keyframes slideUp{from{transform:translateY(100%);}to{transform:translateY(0);}}
+.modal-handle{width:40px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 20px;}
+.modal-icon{width:64px;height:64px;border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 16px;}
+.modal-title{font-size:22px;font-weight:900;text-align:center;margin-bottom:6px;}
+.modal-sub{font-size:13px;color:var(--text2);text-align:center;margin-bottom:22px;line-height:1.5;}
+.modal-summary{background:var(--bg);border-radius:14px;padding:16px;margin-bottom:20px;}
+.ms-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);}
+.ms-row:last-child{border-bottom:none;}
+.ms-label{font-size:12px;color:var(--text2);font-weight:600;}
+.ms-val{font-size:13px;font-weight:800;color:var(--text);}
+.ms-val.green{color:var(--green);}
+.ms-val.blue{color:var(--blue);}
+.payment-methods{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap;}
+.pm-btn{flex:1;min-width:70px;background:var(--bg);border:2px solid var(--border);border-radius:10px;padding:9px 6px;text-align:center;cursor:pointer;font-size:11px;font-weight:700;color:var(--text2);transition:all .18s;}
+.pm-btn:hover,.pm-btn.sel{border-color:var(--blue);color:var(--blue);background:var(--blue-light);}
+.pm-icon{font-size:18px;margin-bottom:3px;display:block;}
+.btn-confirm{width:100%;background:var(--blue);color:#fff;border:none;padding:16px;border-radius:14px;font-size:16px;font-weight:800;cursor:pointer;font-family:'Nunito';transition:all .2s;}
+.btn-confirm:hover{background:var(--blue2);}
+.btn-cancel{width:100%;background:none;border:none;color:var(--text2);font-size:13px;font-weight:700;cursor:pointer;font-family:'Nunito';margin-top:12px;padding:8px;}
+
+/* SUCCESS MODAL */
+.success-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9999;display:none;align-items:center;justify-content:center;padding:20px;}
+.success-overlay.open{display:flex;}
+.success-box{background:var(--white);border-radius:24px;width:100%;max-width:380px;padding:32px 24px;text-align:center;animation:popIn .4s cubic-bezier(.34,1.5,.64,1) both;}
+@keyframes popIn{from{transform:scale(.7);opacity:0;}to{transform:scale(1);opacity:1;}}
+.success-icon{font-size:56px;margin-bottom:14px;display:block;}
+.success-title{font-size:24px;font-weight:900;margin-bottom:8px;color:var(--green);}
+.success-sub{font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:22px;}
+.success-card{background:var(--green-light);border-radius:14px;padding:16px;margin-bottom:20px;}
+.sc-row{display:flex;justify-content:space-between;padding:5px 0;}
+.sc-label{font-size:12px;color:var(--text2);}
+.sc-val{font-size:12px;font-weight:800;color:var(--green);}
+.btn-done{width:100%;background:var(--green);color:#fff;border:none;padding:15px;border-radius:14px;font-size:15px;font-weight:800;cursor:pointer;font-family:'Nunito';}
+.ref-share-box{background:var(--blue-light);border-radius:12px;padding:14px;margin-bottom:18px;display:flex;align-items:center;gap:10px;}
+.ref-code{flex:1;font-family:'Rajdhani';font-size:16px;font-weight:700;color:var(--blue);letter-spacing:1px;}
+.btn-copy-ref{background:var(--blue);color:#fff;border:none;padding:7px 14px;border-radius:8px;font-size:11px;font-weight:800;cursor:pointer;font-family:'Nunito';white-space:nowrap;}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:#111;color:#fff;padding:12px 20px;border-radius:30px;font-size:13px;font-weight:700;z-index:99999;transition:transform .3s cubic-bezier(.34,1.4,.64,1);white-space:nowrap;display:flex;align-items:center;gap:8px;}
+.toast.show{transform:translateX(-50%) translateY(0);}
+
+/* ACTIVE PLANS BANNER */
+.active-plans{margin:0 16px 16px;background:var(--white);border-radius:var(--radius);padding:16px;box-shadow:0 2px 10px rgba(0,0,0,.05);}
+.ap-title{font-size:14px;font-weight:800;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;}
+.ap-count{background:var(--blue);color:#fff;font-size:10px;font-weight:800;padding:2px 8px;border-radius:20px;}
+.ap-empty{font-size:12px;color:var(--text3);text-align:center;padding:8px;}
+.active-plan-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);}
+.active-plan-row:last-child{border-bottom:none;}
+.apr-dot{width:8px;height:8px;border-radius:50%;background:var(--green);flex-shrink:0;}
+.apr-name{flex:1;font-size:12px;font-weight:700;}
+.apr-return{font-size:12px;font-weight:800;color:var(--green);}
+.apr-days{font-size:10px;color:var(--text3);}
+
+/* BOTTOM NAV */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--white);border-top:1px solid var(--border);display:flex;z-index:200;box-shadow:0 -4px 20px rgba(0,0,0,.08);}
+.bn-item{flex:1;display:flex;flex-direction:column;align-items:center;padding:10px 4px 8px;cursor:pointer;transition:color .18s;}
+.bn-icon{font-size:20px;margin-bottom:3px;}
+.bn-label{font-size:9px;font-weight:700;color:var(--text3);}
+.bn-item.active .bn-label{color:var(--blue);}
+.bn-item.active .bn-icon{filter:drop-shadow(0 0 4px rgba(26,111,255,.4));}
+
+/* TABS */
+.plan-tabs{display:flex;gap:6px;padding:0 16px;margin-bottom:14px;overflow-x:auto;}
+.plan-tabs::-webkit-scrollbar{height:0;}
+.pt{padding:7px 16px;border-radius:20px;background:var(--white);border:1px solid var(--border);font-size:12px;font-weight:700;cursor:pointer;color:var(--text2);white-space:nowrap;transition:all .18s;}
+.pt.active{background:var(--blue);border-color:var(--blue);color:#fff;}
+
+/* COUNTDOWN */
+.countdown-chip{display:inline-flex;align-items:center;gap:4px;background:var(--red-light);color:var(--red);font-size:10px;font-weight:800;padding:3px 9px;border-radius:20px;margin-left:8px;}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+.plan-card{animation:fadeUp .35s ease both;}
+.plan-card:nth-child(1){animation-delay:.05s;}
+.plan-card:nth-child(2){animation-delay:.1s;}
+.plan-card:nth-child(3){animation-delay:.15s;}
+.plan-card:nth-child(4){animation-delay:.2s;}
+.plan-card:nth-child(5){animation-delay:.25s;}
+.plan-card:nth-child(6){animation-delay:.3s;}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div>
+    <div class="topbar-title">💰 WinHub Invest</div>
+    <div class="topbar-sub">Grow your money daily</div>
+  </div>
+  <div class="wallet-chip" onclick="showToast('💳','Opening wallet…')">
+    <div>
+      <span class="wlbl">Balance</span>
+      <span id="walletBal">₹2,50,000</span>
+    </div>
+  </div>
+</div>
+
+<!-- BALANCE BANNER -->
+<div class="balance-banner">
+  <div class="bb-label">Total Invested</div>
+  <div class="bb-amount" id="totalInvested">₹0</div>
+  <div class="bb-sub">Expected total returns across all plans</div>
+  <div class="bb-row">
+    <div class="bb-stat"><div class="bb-stat-val" id="totalReturn">₹0</div><div class="bb-stat-lbl">Total Return</div></div>
+    <div class="bb-stat"><div class="bb-stat-val" id="activePlansCount">0 Plans</div><div class="bb-stat-lbl">Active Plans</div></div>
+    <div class="bb-stat"><div class="bb-stat-val" id="totalRefBonus">₹0</div><div class="bb-stat-lbl">Ref. Bonus</div></div>
+  </div>
+</div>
+
+<!-- ACTIVE PLANS -->
+<div class="active-plans">
+  <div class="ap-title">My Active Plans <span class="ap-count" id="apCountChip">0</span></div>
+  <div id="activePlansList"><div class="ap-empty">No active plans yet. Activate a plan below!</div></div>
+</div>
+
+<!-- SECTION TITLE -->
+<div class="sec-title">
+  <h2>Choose Your Plan</h2>
+  <p>Invest once. Earn daily payouts directly to your wallet.</p>
+</div>
+
+<!-- FILTER TABS -->
+<div class="plan-tabs">
+  <div class="pt active" onclick="filterTab(this,'all')">All Plans</div>
+  <div class="pt" onclick="filterTab(this,'starter')">Starter</div>
+  <div class="pt" onclick="filterTab(this,'mid')">Mid</div>
+  <div class="pt" onclick="filterTab(this,'premium')">Premium</div>
+</div>
+
+<!-- PLANS -->
+<div class="plans-container" id="plansContainer"></div>
+
+<!-- ACTIVATE MODAL -->
+<div class="modal-overlay" id="activateModal" onclick="closeModalOutside(event)">
+  <div class="modal-box" id="modalBox">
+    <div class="modal-handle"></div>
+    <div class="modal-icon" id="mIcon">💰</div>
+    <div class="modal-title" id="mTitle">Activate Plan</div>
+    <div class="modal-sub" id="mSub">Review your plan details below</div>
+    <div class="modal-summary" id="mSummary"></div>
+    <div style="font-size:11px;font-weight:700;color:var(--text2);margin-bottom:8px;">Choose Payment Method</div>
+    <div class="payment-methods">
+      <div class="pm-btn sel" onclick="selPM(this)"><span class="pm-icon">📱</span>UPI</div>
+      <div class="pm-btn" onclick="selPM(this)"><span class="pm-icon">🏦</span>Net Banking</div>
+      <div class="pm-btn" onclick="selPM(this)"><span class="pm-icon">💳</span>Card</div>
+      <div class="pm-btn" onclick="selPM(this)"><span class="pm-icon">🟡</span>Paytm</div>
+    </div>
+    <button class="btn-confirm" id="btnConfirm" onclick="confirmActivate()">Pay & Activate Plan →</button>
+    <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+  </div>
+</div>
+
+<!-- SUCCESS MODAL -->
+<div class="success-overlay" id="successOverlay">
+  <div class="success-box">
+    <span class="success-icon">🎉</span>
+    <div class="success-title">Plan Activated!</div>
+    <div class="success-sub" id="successSub">Your investment is now live. Daily payouts start from tomorrow!</div>
+    <div class="success-card" id="successCard"></div>
+    <div class="ref-share-box">
+      <div>
+        <div style="font-size:10px;color:var(--text2);font-weight:700;margin-bottom:3px">Your Referral Code</div>
+        <div class="ref-code">WINREF-AK21</div>
+      </div>
+      <button class="btn-copy-ref" onclick="copyRef()">📋 COPY</button>
+    </div>
+    <button class="btn-done" onclick="closeSuccess()">Done ✓</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
+  <div class="bn-item active" onclick="showToast('🏠','Dashboard')"><div class="bn-icon">🏠</div><div class="bn-label">Home</div></div>
+  <div class="bn-item" onclick="showToast('💰','My Plans')"><div class="bn-icon">📊</div><div class="bn-label">My Plans</div></div>
+  <div class="bn-item" onclick="showToast('💸','Earnings')"><div class="bn-icon">💸</div><div class="bn-label">Earnings</div></div>
+  <div class="bn-item" onclick="showToast('🤝','Referrals')"><div class="bn-icon">🤝</div><div class="bn-label">Referral</div></div>
+  <div class="bn-item" onclick="showToast('👤','Profile')"><div class="bn-icon">👤</div><div class="bn-label">Profile</div></div>
+</div>
+
+<script>
+// ── DATA ──────────────────────────────────
+const PLANS = [
+  {
+    id:'starter',tier:'starter',
+    name:'Starter Growth Plan',
+    invest:199,
+    payout:350,
+    daily:35,
+    days:10,
+    refBonus:50,
+    unlimitedRef:true,
+    icon:'🌱',
+    tagCls:'tag-starter',tagText:'Starter',
+    featCls:'fi-blue',
+    btnCls:'',
+    popular:false,premium:false,
+    color:'var(--blue)',
+    headline:'Invest ₹199. Earn<br>₹350 in 10 days.',
+    badge:null,
+    category:'starter'
+  },
+  {
+    id:'basic',tier:'basic',
+    name:'Basic Growth Plan',
+    invest:499,
+    payout:800,
+    daily:53,
+    days:15,
+    refBonus:75,
+    unlimitedRef:true,
+    icon:'📈',
+    tagCls:'tag-basic',tagText:'Basic',
+    featCls:'fi-green',
+    btnCls:'',
+    popular:false,premium:false,
+    color:'var(--green)',
+    headline:'Invest ₹499. Earn<br>₹800 in 15 days.',
+    badge:null,
+    category:'starter'
+  },
+  {
+    id:'growth',tier:'growth',
+    name:'Smart Growth Plan',
+    invest:999,
+    payout:1700,
+    daily:85,
+    days:20,
+    refBonus:100,
+    unlimitedRef:true,
+    icon:'🚀',
+    tagCls:'tag-growth',tagText:'Growth',
+    featCls:'fi-teal',
+    btnCls:'',
+    popular:true,premium:false,
+    color:'var(--teal)',
+    headline:'Invest ₹999. Earn<br>₹1,700 in 20 days.',
+    badge:'MOST POPULAR',
+    category:'mid'
+  },
+  {
+    id:'pro',tier:'pro',
+    name:'Pro Wealth Plan',
+    invest:2499,
+    payout:4300,
+    daily:172,
+    days:25,
+    refBonus:200,
+    unlimitedRef:true,
+    icon:'💼',
+    tagCls:'tag-pro',tagText:'Pro',
+    featCls:'fi-purple',
+    btnCls:'',
+    popular:false,premium:false,
+    color:'var(--purple)',
+    headline:'Invest ₹2,499. Earn<br>₹4,300 in 25 days.',
+    badge:null,
+    category:'mid'
+  },
+  {
+    id:'elite',tier:'elite',
+    name:'Elite Gold Plan',
+    invest:4999,
+    payout:8500,
+    daily:340,
+    days:25,
+    refBonus:500,
+    unlimitedRef:true,
+    icon:'👑',
+    tagCls:'tag-elite',tagText:'Elite',
+    featCls:'fi-gold',
+    btnCls:'gold-btn',
+    popular:false,premium:true,
+    color:'var(--gold)',
+    headline:'Invest ₹4,999. Earn<br>₹8,500 in 25 days.',
+    badge:'PREMIUM',
+    category:'premium'
+  },
+  {
+    id:'ultra',tier:'ultra',
+    name:'Ultra Platinum Plan',
+    invest:9999,
+    payout:19999,
+    bonus:999,
+    daily:667,
+    days:30,
+    refBonus:999,
+    unlimitedRef:true,
+    icon:'💎',
+    tagCls:'tag-ultra',tagText:'Ultra',
+    featCls:'fi-pink',
+    btnCls:'',
+    popular:false,premium:true,
+    color:'#d63384',
+    headline:'Invest ₹9,999. Earn<br>₹20,998 in 30 days.',
+    badge:'PLATINUM',
+    category:'premium'
+  },
+];
+
+let wallet = 250000;
+let activePlans = [];
+let currentPlan = null;
+let selectedPM = 'UPI';
+
+// ── RENDER PLANS ─────────────────────────
+function renderPlans(plans) {
+  const c = document.getElementById('plansContainer');
+  const pct = p => Math.round((p.days / 30) * 100);
+  c.innerHTML = plans.map(p => {
+    const totalPayout = p.payout + (p.bonus || 0);
+    const profit = totalPayout - p.invest;
+    const roi = Math.round((profit / p.invest) * 100);
+    const durPct = pct(p);
+    const isActive = activePlans.find(a => a.id === p.id);
+    return `
+    <div class="plan-card ${p.popular?'popular':''} ${p.premium?'premium':''}" data-cat="${p.category}" id="card-${p.id}">
+      ${p.badge ? `<div class="${p.popular?'popular-badge':'premium-badge'}">${p.badge}</div>` : ''}
+      <div class="plan-header">
+        <div class="plan-tag ${p.tagCls}">${p.icon} ${p.tagText} Plan</div>
+        <div class="plan-name">${p.name}</div>
+        <div class="plan-headline">${p.headline.replace(/₹[\d,]+/g, m => `<span style="color:${p.color}">${m}</span>`)}</div>
+      </div>
+      <div class="plan-divider"></div>
+      <div class="plan-features">
+        <div class="feat-row">
+          <div class="feat-icon ${p.featCls}">💸</div>
+          <div class="feat-text"><div class="feat-label">₹${p.daily.toLocaleString('en-IN')} per day payout</div><div class="feat-sub">Direct to your WinHub wallet</div></div>
+        </div>
+        <div class="feat-row">
+          <div class="feat-icon ${p.featCls}">📅</div>
+          <div class="feat-text"><div class="feat-label">${p.days}-day duration</div><div class="feat-sub">Payouts start from Day 1</div></div>
+        </div>
+        <div class="feat-row">
+          <div class="feat-icon ${p.featCls}">📊</div>
+          <div class="feat-text">
+            <div class="feat-label">Total Return: ₹${totalPayout.toLocaleString('en-IN')} ${p.bonus ? `<span style="font-size:10px;background:#fff8ec;color:var(--gold);padding:1px 7px;border-radius:20px;font-weight:800">+₹${p.bonus.toLocaleString('en-IN')} bonus</span>` : ''}</div>
+            <div class="feat-sub">ROI: ${roi}% profit on investment</div>
+          </div>
+        </div>
+      </div>
+      <div class="duration-bar">
+        <div class="dur-label"><span>Plan Duration</span><span style="color:${p.color}">${p.days} days</span></div>
+        <div class="dur-track"><div class="dur-fill" style="width:${durPct}%;background:${p.color}"></div></div>
+      </div>
+      <div class="plan-referral">
+        <div class="ref-icon">🤝</div>
+        <div class="ref-text">
+          <div class="ref-main">+₹${p.refBonus.toLocaleString('en-IN')} Referral Bonus</div>
+          <div class="ref-sub">Earn ₹${p.refBonus} for every friend who joins · Unlimited bonuses</div>
+        </div>
+      </div>
+      <div class="plan-footer">
+        ${isActive
+          ? `<button class="btn-activate" style="background:var(--green);cursor:default">✓ Plan Active — Earning Daily</button>`
+          : `<button class="btn-activate ${p.btnCls}" onclick="openActivate('${p.id}')">Activate for ₹${p.invest.toLocaleString('en-IN')} →</button>`
+        }
+        <div class="plan-disclaimer">Powered by WinHub · Payments direct to wallet · Past performance is not a guarantee · For entertainment purposes.</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function filterTab(el, cat) {
+  document.querySelectorAll('.pt').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  const filtered = cat === 'all' ? PLANS : PLANS.filter(p => p.category === cat);
+  renderPlans(filtered);
+}
+
+// ── ACTIVATE FLOW ─────────────────────────
+function openActivate(id) {
+  currentPlan = PLANS.find(p => p.id === id);
+  if (!currentPlan) return;
+  const p = currentPlan;
+  const totalPayout = p.payout + (p.bonus || 0);
+  const profit = totalPayout - p.invest;
+
+  document.getElementById('mIcon').textContent = p.icon;
+  document.getElementById('mIcon').style.background = `linear-gradient(135deg,${p.color}22,${p.color}44)`;
+  document.getElementById('mTitle').textContent = p.name;
+  document.getElementById('mSub').textContent = `Activate your ${p.days}-day investment plan`;
+
+  document.getElementById('mSummary').innerHTML = `
+    <div class="ms-row"><span class="ms-label">Investment Amount</span><span class="ms-val">₹${p.invest.toLocaleString('en-IN')}</span></div>
+    <div class="ms-row"><span class="ms-label">Daily Payout</span><span class="ms-val green">₹${p.daily.toLocaleString('en-IN')}/day</span></div>
+    <div class="ms-row"><span class="ms-label">Duration</span><span class="ms-val">${p.days} Days</span></div>
+    <div class="ms-row"><span class="ms-label">Total Return</span><span class="ms-val green">₹${p.payout.toLocaleString('en-IN')}${p.bonus ? ` + ₹${p.bonus.toLocaleString('en-IN')} bonus` : ''}</span></div>
+    <div class="ms-row"><span class="ms-label">Net Profit</span><span class="ms-val green">+₹${profit.toLocaleString('en-IN')}</span></div>
+    <div class="ms-row"><span class="ms-label">Referral Bonus/Friend</span><span class="ms-val blue">₹${p.refBonus.toLocaleString('en-IN')}</span></div>`;
+
+  const btn = document.getElementById('btnConfirm');
+  btn.textContent = `Pay ₹${p.invest.toLocaleString('en-IN')} & Activate →`;
+  if (p.premium) { btn.style.background = p.color === 'var(--gold)' ? 'linear-gradient(135deg,var(--gold),#e8870a)' : 'linear-gradient(135deg,#d63384,#a01068)'; }
+  else btn.style.background = '';
+
+  // reset payment method
+  selectedPM = 'UPI';
+  document.querySelectorAll('.pm-btn').forEach((b,i) => b.classList.toggle('sel', i===0));
+
+  document.getElementById('activateModal').classList.add('open');
+}
+
+function selPM(el) {
+  document.querySelectorAll('.pm-btn').forEach(b => b.classList.remove('sel'));
+  el.classList.add('sel');
+  selectedPM = el.textContent.trim().replace(/[^\w ]/g,'').trim();
+}
+
+function closeModal() { document.getElementById('activateModal').classList.remove('open'); }
+function closeModalOutside(e) { if(e.target.id==='activateModal') closeModal(); }
+
+function confirmActivate() {
+  const p = currentPlan;
+  if (!p) return;
+  if (p.invest > wallet) { showToast('❌','Insufficient balance! Please deposit first.'); return; }
+
+  wallet -= p.invest;
+  document.getElementById('walletBal').textContent = '₹' + wallet.toLocaleString('en-IN');
+  closeModal();
+
+  // Add to active plans
+  if (!activePlans.find(a => a.id === p.id)) {
+    activePlans.push({ id: p.id, name: p.name, invest: p.invest, payout: p.payout + (p.bonus||0), days: p.days, icon: p.icon, color: p.color, refBonus: p.refBonus });
+  }
+  updateStats();
+  renderPlans(PLANS); // re-render to show active state
+
+  // Show success
+  const totalPayout = p.payout + (p.bonus || 0);
+  document.getElementById('successSub').textContent = `${p.name} is now active! Daily payouts of ₹${p.daily.toLocaleString('en-IN')} start from tomorrow. Share your referral code to earn more!`;
+  document.getElementById('successCard').innerHTML = `
+    <div class="sc-row"><span class="sc-label">Plan</span><span class="sc-val">${p.icon} ${p.name}</span></div>
+    <div class="sc-row"><span class="sc-label">Invested</span><span class="sc-val">₹${p.invest.toLocaleString('en-IN')}</span></div>
+    <div class="sc-row"><span class="sc-label">Total Return</span><span class="sc-val">₹${totalPayout.toLocaleString('en-IN')}</span></div>
+    <div class="sc-row"><span class="sc-label">Duration</span><span class="sc-val">${p.days} days</span></div>
+    <div class="sc-row"><span class="sc-label">Your Profit</span><span class="sc-val">+₹${(totalPayout - p.invest).toLocaleString('en-IN')}</span></div>`;
+  document.getElementById('successOverlay').classList.add('open');
+}
+
+function closeSuccess() { document.getElementById('successOverlay').classList.remove('open'); }
+
+// ── STATS ─────────────────────────────────
+function updateStats() {
+  const totalInv = activePlans.reduce((s, p) => s + p.invest, 0);
+  const totalRet = activePlans.reduce((s, p) => s + p.payout, 0);
+  const totalRef = activePlans.reduce((s, p) => s + p.refBonus, 0);
+
+  document.getElementById('totalInvested').textContent = '₹' + totalInv.toLocaleString('en-IN');
+  document.getElementById('totalReturn').textContent = '₹' + totalRet.toLocaleString('en-IN');
+  document.getElementById('activePlansCount').textContent = activePlans.length + (activePlans.length === 1 ? ' Plan' : ' Plans');
+  document.getElementById('totalRefBonus').textContent = '₹' + totalRef.toLocaleString('en-IN');
+  document.getElementById('apCountChip').textContent = activePlans.length;
+
+  const listEl = document.getElementById('activePlansList');
+  if (!activePlans.length) {
+    listEl.innerHTML = '<div class="ap-empty">No active plans yet. Activate a plan below!</div>';
+  } else {
+    listEl.innerHTML = activePlans.map(p => `
+      <div class="active-plan-row">
+        <div class="apr-dot" style="background:${p.color}"></div>
+        <div style="flex:1">
+          <div class="apr-name">${p.icon} ${p.name}</div>
+          <div class="apr-days">₹${p.invest.toLocaleString('en-IN')} · ${p.days} days</div>
+        </div>
+        <div class="apr-return">+₹${(p.payout - p.invest).toLocaleString('en-IN')}</div>
+      </div>`).join('');
+  }
+}
+
+// ── UTILS ─────────────────────────────────
+function copyRef() {
+  navigator.clipboard.writeText('https://winhub.in/ref/WINREF-AK21').catch(() => {});
+  showToast('📋', 'Referral link copied to clipboard!');
+}
+
+let toastTimer;
+function showToast(icon, msg) {
+  clearTimeout(toastTimer);
+  const t = document.getElementById('toast');
+  t.innerHTML = `<span>${icon}</span><span>${msg}</span>`;
+  t.classList.add('show');
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2600);
+}
+
+// ── INIT ──────────────────────────────────
+renderPlans(PLANS);
+updateStats();
+</script>
+</body>
+</html>
