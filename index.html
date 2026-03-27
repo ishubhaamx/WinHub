@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>WinHub — Investment Plans</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+<!-- Add Bootstrap CSS for responsive design -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-HoA6YkQJp1K6f6s1q2y3zZtY0bP9qG1Vn9e6q2z5sFQv1hZ4q3XjvZx4Y8K3e9gD" crossorigin="anonymous">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 :root{
@@ -47,7 +49,7 @@ body{background:var(--bg);font-family:'Nunito',sans-serif;min-height:100vh;color
 .sec-title p{font-size:12px;color:var(--text2);margin-top:2px;}
 
 /* PLAN CARDS */
-.plans-container{padding:0 16px;display:flex;flex-direction:column;gap:14px;padding-bottom:100px;}
+.plans-container{padding:0 16px;display:block;padding-bottom:100px;} /* Remove custom flex to use Bootstrap row */
 
 .plan-card{background:var(--white);border-radius:var(--radius);overflow:hidden;box-shadow:0 2px 16px rgba(0,0,0,.06);border:2px solid transparent;transition:all .25s;position:relative;}
 .plan-card.popular{border-color:var(--blue);}
@@ -194,7 +196,7 @@ body{background:var(--bg);font-family:'Nunito',sans-serif;min-height:100vh;color
 <body>
 
 <!-- TOPBAR -->
-<div class="topbar">
+<div class="topbar d-flex justify-content-between align-items-center px-3 py-2">
   <div>
     <div class="topbar-title">💰 WinHub Invest</div>
     <div class="topbar-sub">Grow your money daily</div>
@@ -208,7 +210,7 @@ body{background:var(--bg);font-family:'Nunito',sans-serif;min-height:100vh;color
 </div>
 
 <!-- BALANCE BANNER -->
-<div class="balance-banner">
+<div class="balance-banner container-fluid px-3 py-4">
   <div class="bb-label">Total Invested</div>
   <div class="bb-amount" id="totalInvested">₹0</div>
   <div class="bb-sub">Expected total returns across all plans</div>
@@ -220,19 +222,19 @@ body{background:var(--bg);font-family:'Nunito',sans-serif;min-height:100vh;color
 </div>
 
 <!-- ACTIVE PLANS -->
-<div class="active-plans">
+<div class="active-plans container-fluid px-3 mb-3">
   <div class="ap-title">My Active Plans <span class="ap-count" id="apCountChip">0</span></div>
   <div id="activePlansList"><div class="ap-empty">No active plans yet. Activate a plan below!</div></div>
 </div>
 
 <!-- SECTION TITLE -->
-<div class="sec-title">
+<div class="sec-title container-fluid px-3 mb-2">
   <h2>Choose Your Plan</h2>
   <p>Invest once. Earn daily payouts directly to your wallet.</p>
 </div>
 
 <!-- FILTER TABS -->
-<div class="plan-tabs">
+<div class="plan-tabs d-flex gap-2 px-3 mb-3 overflow-auto">
   <div class="pt active" onclick="filterTab(this,'all')">All Plans</div>
   <div class="pt" onclick="filterTab(this,'starter')">Starter</div>
   <div class="pt" onclick="filterTab(this,'mid')">Mid</div>
@@ -240,11 +242,15 @@ body{background:var(--bg);font-family:'Nunito',sans-serif;min-height:100vh;color
 </div>
 
 <!-- PLANS -->
-<div class="plans-container" id="plansContainer"></div>
+<div class="plans-container container-fluid px-3">
+  <div class="row g-3" id="plansRow">
+    <!-- Plans will be rendered here with col-12 for mobile stacking -->
+  </div>
+</div>
 
 <!-- ACTIVATE MODAL -->
-<div class="modal-overlay" id="activateModal" onclick="closeModalOutside(event)">
-  <div class="modal-box" id="modalBox">
+<div class="modal-overlay d-flex align-items-end justify-content-center" id="activateModal" onclick="closeModalOutside(event)">
+  <div class="modal-box container-fluid px-3 py-4">
     <div class="modal-handle"></div>
     <div class="modal-icon" id="mIcon">💰</div>
     <div class="modal-title" id="mTitle">Activate Plan</div>
@@ -263,8 +269,8 @@ body{background:var(--bg);font-family:'Nunito',sans-serif;min-height:100vh;color
 </div>
 
 <!-- SUCCESS MODAL -->
-<div class="success-overlay" id="successOverlay">
-  <div class="success-box">
+<div class="success-overlay d-flex align-items-center justify-content-center p-3" id="successOverlay">
+  <div class="success-box container-fluid px-3 py-4">
     <span class="success-icon">🎉</span>
     <div class="success-title">Plan Activated!</div>
     <div class="success-sub" id="successSub">Your investment is now live. Daily payouts start from tomorrow!</div>
@@ -284,7 +290,7 @@ body{background:var(--bg);font-family:'Nunito',sans-serif;min-height:100vh;color
 <div class="toast" id="toast"></div>
 
 <!-- BOTTOM NAV -->
-<div class="bottom-nav">
+<div class="bottom-nav d-flex justify-content-around py-2">
   <div class="bn-item active" onclick="showToast('🏠','Dashboard')"><div class="bn-icon">🏠</div><div class="bn-label">Home</div></div>
   <div class="bn-item" onclick="showToast('💰','My Plans')"><div class="bn-icon">📊</div><div class="bn-label">My Plans</div></div>
   <div class="bn-item" onclick="showToast('💸','Earnings')"><div class="bn-icon">💸</div><div class="bn-label">Earnings</div></div>
@@ -420,7 +426,7 @@ let selectedPM = 'UPI';
 
 // ── RENDER PLANS ─────────────────────────
 function renderPlans(plans) {
-  const c = document.getElementById('plansContainer');
+  const c = document.getElementById('plansRow');
   const pct = p => Math.round((p.days / 30) * 100);
   c.innerHTML = plans.map(p => {
     const totalPayout = p.payout + (p.bonus || 0);
@@ -429,48 +435,50 @@ function renderPlans(plans) {
     const durPct = pct(p);
     const isActive = activePlans.find(a => a.id === p.id);
     return `
-    <div class="plan-card ${p.popular?'popular':''} ${p.premium?'premium':''}" data-cat="${p.category}" id="card-${p.id}">
-      ${p.badge ? `<div class="${p.popular?'popular-badge':'premium-badge'}">${p.badge}</div>` : ''}
-      <div class="plan-header">
-        <div class="plan-tag ${p.tagCls}">${p.icon} ${p.tagText} Plan</div>
-        <div class="plan-name">${p.name}</div>
-        <div class="plan-headline">${p.headline.replace(/₹[\d,]+/g, m => `<span style="color:${p.color}">${m}</span>`)}</div>
-      </div>
-      <div class="plan-divider"></div>
-      <div class="plan-features">
-        <div class="feat-row">
-          <div class="feat-icon ${p.featCls}">💸</div>
-          <div class="feat-text"><div class="feat-label">₹${p.daily.toLocaleString('en-IN')} per day payout</div><div class="feat-sub">Direct to your WinHub wallet</div></div>
+    <div class="col-12" data-cat="${p.category}" id="card-${p.id}">
+      <div class="plan-card ${p.popular?'popular':''} ${p.premium?'premium':''}">
+        ${p.badge ? `<div class="${p.popular?'popular-badge':'premium-badge'}">${p.badge}</div>` : ''}
+        <div class="plan-header">
+          <div class="plan-tag ${p.tagCls}">${p.icon} ${p.tagText} Plan</div>
+          <div class="plan-name">${p.name}</div>
+          <div class="plan-headline">${p.headline.replace(/₹[\d,]+/g, m => `<span style="color:${p.color}">${m}</span>`)}</div>
         </div>
-        <div class="feat-row">
-          <div class="feat-icon ${p.featCls}">📅</div>
-          <div class="feat-text"><div class="feat-label">${p.days}-day duration</div><div class="feat-sub">Payouts start from Day 1</div></div>
-        </div>
-        <div class="feat-row">
-          <div class="feat-icon ${p.featCls}">📊</div>
-          <div class="feat-text">
-            <div class="feat-label">Total Return: ₹${totalPayout.toLocaleString('en-IN')} ${p.bonus ? `<span style="font-size:10px;background:#fff8ec;color:var(--gold);padding:1px 7px;border-radius:20px;font-weight:800">+₹${p.bonus.toLocaleString('en-IN')} bonus</span>` : ''}</div>
-            <div class="feat-sub">ROI: ${roi}% profit on investment</div>
+        <div class="plan-divider"></div>
+        <div class="plan-features">
+          <div class="feat-row">
+            <div class="feat-icon ${p.featCls}">💸</div>
+            <div class="feat-text"><div class="feat-label">₹${p.daily.toLocaleString('en-IN')} per day payout</div><div class="feat-sub">Direct to your WinHub wallet</div></div>
+          </div>
+          <div class="feat-row">
+            <div class="feat-icon ${p.featCls}">📅</div>
+            <div class="feat-text"><div class="feat-label">${p.days}-day duration</div><div class="feat-sub">Payouts start from Day 1</div></div>
+          </div>
+          <div class="feat-row">
+            <div class="feat-icon ${p.featCls}">📊</div>
+            <div class="feat-text">
+              <div style="display:block;margin-top:10px;" class="feat-label">Total Return: ₹${totalPayout.toLocaleString('en-IN')} ${p.bonus ? `<span style="font-size:15px;background:#fff8ec;color:var(--gold);padding:1px 7px;border-radius:20px;font-weight:800">+₹${p.bonus.toLocaleString('en-IN')} bonus</span>` : ''}</div>
+              <!--<div class="feat-sub">ROI: ${roi}% profit on investment</div>--!>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="duration-bar">
-        <div class="dur-label"><span>Plan Duration</span><span style="color:${p.color}">${p.days} days</span></div>
-        <div class="dur-track"><div class="dur-fill" style="width:${durPct}%;background:${p.color}"></div></div>
-      </div>
-      <div class="plan-referral">
-        <div class="ref-icon">🤝</div>
-        <div class="ref-text">
-          <div class="ref-main">+₹${p.refBonus.toLocaleString('en-IN')} Referral Bonus</div>
-          <div class="ref-sub">Earn ₹${p.refBonus} for every friend who joins · Unlimited bonuses</div>
+        <div class="duration-bar">
+          <div class="dur-label"><span>Plan Duration</span><span style="color:${p.color}">${p.days} days</span></div>
+          <div class="dur-track"><div class="dur-fill" style="width:${durPct}%;background:${p.color}"></div></div>
         </div>
-      </div>
-      <div class="plan-footer">
-        ${isActive
-          ? `<button class="btn-activate" style="background:var(--green);cursor:default">✓ Plan Active — Earning Daily</button>`
-          : `<button class="btn-activate ${p.btnCls}" onclick="openActivate('${p.id}')">Activate for ₹${p.invest.toLocaleString('en-IN')} →</button>`
-        }
-        <div class="plan-disclaimer">Powered by WinHub · Payments direct to wallet · Past performance is not a guarantee · For entertainment purposes.</div>
+        <div class="plan-referral">
+          <div class="ref-icon">🤝</div>
+          <div class="ref-text">
+            <div class="ref-main">+₹${p.refBonus.toLocaleString('en-IN')} Referral Bonus</div>
+            <div class="ref-sub">Earn ₹${p.refBonus} for every friend who joins · Unlimited bonuses</div>
+          </div>
+        </div>
+        <div class="plan-footer">
+          ${isActive
+            ? `<button class="btn-activate" style="background:var(--green);cursor:default">✓ Plan Active — Earning Daily</button>`
+            : `<button class="btn-activate ${p.btnCls}" onclick="openActivate('${p.id}')">Activate for ₹${p.invest.toLocaleString('en-IN')} →</button>`
+          }
+          <div class="plan-disclaimer">Powered by WinHub · Payments direct to wallet · Past performance is not a guarantee · For entertainment purposes.</div>
+        </div>
       </div>
     </div>`;
   }).join('');
@@ -616,5 +624,7 @@ window.onload = function() {
   updateStats();
 }
 </script>
+<!-- Add Bootstrap JS bundle at the end -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-EVSTQN3/azprG1Anm+Y6ZbQ7t8u9v0x1y2z3a4b5c6d7e8f9" crossorigin="anonymous"></script>
 </body>
 </html>

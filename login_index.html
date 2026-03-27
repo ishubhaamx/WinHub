@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>WinHub — Login & Register</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Bebas+Neue&display=swap" rel="stylesheet">
+<!-- Added Bootstrap for mobile responsiveness -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-HoA6YkQJp1K6f6s1q2y3zZtY0bP9qG1Vn9e6q2z5sFQv1hZ4q3XjvZx4Y8K3e9gD" crossorigin="anonymous">
+<script src="winhub-session.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+:root{--blue:#1a6fff;--blue2:#0d53d4;--gold:#f5a623;--gold2:#e8870a;--green:#00b87c;--red:#e84040;--dark:#0a0d1a;--text:#fff;--text2:rgba(255,255,255,.65);--text3:rgba(255,255,255,.3);--border:rgba(255,255,255,.08);--border2:rgba(255,255,255,.16);--ibg:rgba(255,255,255,.06);}
+html,body{height:100%;overflow:hidden;}
+body{background:var(--dark);font-family:'Nunito',sans-serif;color:var(--text);display:flex;align-items:center;justify-content:center;min-height:100vh;position:relative;}
+.bg{position:fixed;inset:0;z-index:0;}
+.bgg{position:absolute;inset:0;background:radial-gradient(ellipse at 20% 20%,rgba(26,111,255,.2) 0%,transparent 50%),radial-gradient(ellipse at 80% 80%,rgba(245,166,35,.12) 0%,transparent 50%),linear-gradient(135deg,#0a0d1a,#0f1225,#0a0d1a);}
+.bggrid{position:absolute;inset:0;opacity:.04;background-image:linear-gradient(rgba(255,255,255,1) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,1) 1px,transparent 1px);background-size:40px 40px;}
+.orb{position:absolute;border-radius:50%;filter:blur(70px);animation:drift 9s ease-in-out infinite;}
+.orb1{width:380px;height:380px;background:rgba(26,111,255,.14);top:-80px;left:-80px;}
+.orb2{width:280px;height:280px;background:rgba(245,166,35,.1);bottom:-60px;right:-60px;animation-delay:-4s;}
+.orb3{width:180px;height:180px;background:rgba(0,184,124,.07);top:55%;left:65%;animation-delay:-7s;}
+@keyframes drift{0%,100%{transform:translate(0,0);}40%{transform:translate(28px,-18px);}70%{transform:translate(-18px,28px);}}
+.pt{position:absolute;border-radius:50%;background:rgba(255,255,255,.18);animation:rise linear infinite;}
+@keyframes rise{from{transform:translateY(100vh);opacity:0;}10%,90%{opacity:1;}to{transform:translateY(-10px);opacity:0;}}
+.wrap{position:relative;z-index:10;width:100%;max-width:432px;max-height:100vh;overflow-y:auto;padding:18px 16px 36px;-ms-overflow-style:none;scrollbar-width:none;}
+.wrap::-webkit-scrollbar{display:none;}
+.logo{text-align:center;margin-bottom:20px;animation:fu .4s ease both;}
+.lhex{width:66px;height:66px;background:linear-gradient(135deg,var(--blue),var(--blue2));clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);display:flex;align-items:center;justify-content:center;margin:0 auto 9px;box-shadow:0 8px 28px rgba(26,111,255,.45);}
+.lhex span{font-family:'Bebas Neue';font-size:27px;color:#fff;}
+.lname{font-family:'Bebas Neue';font-size:32px;letter-spacing:4px;}
+.lname em{color:var(--gold);font-style:normal;}
+.ltag{font-size:11px;color:var(--text2);font-weight:600;letter-spacing:.8px;margin-top:2px;}
+.trust{display:flex;justify-content:center;gap:7px;flex-wrap:wrap;margin-bottom:18px;animation:fu .4s .07s ease both;}
+.tc{display:flex;align-items:center;gap:4px;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:20px;padding:4px 10px;font-size:10px;font-weight:700;color:var(--text2);}
+.card{background:rgba(255,255,255,.04);border:1px solid var(--border2);border-radius:22px;backdrop-filter:blur(20px);overflow:hidden;box-shadow:0 20px 50px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.07);animation:fu .4s .12s ease both;}
+@keyframes fu{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+.tabrow{display:flex;padding:5px;background:rgba(0,0,0,.22);gap:4px;}
+.atab{flex:1;padding:10px;border-radius:13px;text-align:center;font-size:13px;font-weight:800;cursor:pointer;color:var(--text2);border:none;background:none;font-family:'Nunito';transition:all .2s;}
+.atab.on{background:var(--blue);color:#fff;box-shadow:0 4px 14px rgba(26,111,255,.4);}
+.atab:not(.on):hover{color:var(--text);background:rgba(255,255,255,.06);}
+.pnl{display:none;padding:20px;}
+.pnl.on{display:block;}
+.fg{margin-bottom:13px;}
+.fl{font-size:10px;font-weight:800;color:var(--text2);letter-spacing:.5px;text-transform:uppercase;margin-bottom:5px;display:block;}
+.iw{position:relative;display:flex;align-items:center;}
+.ii{position:absolute;left:13px;font-size:14px;pointer-events:none;line-height:1;}
+.inp{width:100%;background:var(--ibg);border:1.5px solid var(--border);border-radius:11px;padding:12px 12px 12px 41px;color:var(--text);font-size:14px;font-weight:600;font-family:'Nunito';outline:none;transition:all .18s;-webkit-appearance:none;appearance:none;}
+.inp::placeholder{color:var(--text3);}
+.inp:focus{border-color:rgba(26,111,255,.65);background:rgba(26,111,255,.07);box-shadow:0 0 0 3px rgba(26,111,255,.12);}
+.inp.err{border-color:rgba(232,64,64,.65);background:rgba(232,64,64,.06);}
+.eyeb{position:absolute;right:12px;cursor:pointer;color:var(--text3);font-size:14px;background:none;border:none;transition:color .18s;padding:4px;}
+.eyeb:hover{color:var(--text2);}
+.ferr{font-size:10px;color:var(--red);font-weight:700;margin-top:4px;display:none;}
+.ferr.on{display:block;}
+.prow{display:flex;gap:7px;}
+.cc{background:var(--ibg);border:1.5px solid var(--border);border-radius:11px;padding:12px 10px;color:var(--text);font-size:13px;font-weight:700;font-family:'Nunito';white-space:nowrap;display:flex;align-items:center;gap:4px;}
+.sb{height:3px;border-radius:2px;background:var(--border);margin-top:6px;overflow:hidden;}
+.sf{height:100%;border-radius:2px;width:0%;transition:all .3s;}
+.sl{font-size:10px;font-weight:700;margin-top:4px;min-height:14px;}
+.orow{display:flex;gap:6px;justify-content:center;margin:7px 0 13px;}
+.oi{width:45px;height:51px;background:var(--ibg);border:1.5px solid var(--border);border-radius:10px;text-align:center;font-size:20px;font-weight:800;color:var(--text);font-family:'Nunito';outline:none;transition:all .18s;-webkit-appearance:none;}
+.oi:focus{border-color:var(--blue);background:rgba(26,111,255,.1);box-shadow:0 0 0 3px rgba(26,111,255,.13);}
+.oi.filled{border-color:var(--green);}
+.crow{display:flex;align-items:flex-start;gap:8px;margin-bottom:11px;}
+.cbox{width:18px;height:18px;border:2px solid var(--border2);border-radius:5px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:var(--ibg);transition:all .18s;margin-top:1px;}
+.cbox.on{background:var(--blue);border-color:var(--blue);}
+.cbox.on::after{content:'✓';color:#fff;font-size:11px;font-weight:800;}
+.ctxt{font-size:11px;color:var(--text2);line-height:1.5;}
+.ctxt a{color:var(--blue);text-decoration:none;font-weight:700;}
+.reftag{position:absolute;right:10px;background:var(--green);color:#fff;font-size:9px;font-weight:800;padding:2px 6px;border-radius:20px;display:none;}
+.reftag.on{display:block;}
+.dvd{display:flex;align-items:center;gap:10px;margin:15px 0;}
+.dl{flex:1;height:1px;background:var(--border);}
+.dt{font-size:10px;color:var(--text3);font-weight:700;}
+.srow{display:flex;gap:7px;}
+.sb2{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;background:var(--ibg);border:1.5px solid var(--border);border-radius:11px;padding:11px 5px;cursor:pointer;font-size:12px;font-weight:700;color:var(--text2);transition:all .18s;font-family:'Nunito';}
+.sb2:hover{border-color:var(--border2);color:var(--text);}
+.btn{width:100%;padding:13px;border-radius:13px;border:none;background:linear-gradient(135deg,var(--blue),var(--blue2));color:#fff;font-size:14px;font-weight:800;cursor:pointer;font-family:'Nunito';box-shadow:0 6px 18px rgba(26,111,255,.35);transition:all .2s;margin-top:2px;}
+.btn:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(26,111,255,.45);}
+.btn:active{transform:translateY(0);}
+.btn.loading{pointer-events:none;opacity:.8;}
+.btn.gold{background:linear-gradient(135deg,var(--gold),var(--gold2));box-shadow:0 6px 18px rgba(245,166,35,.35);}
+.btn+.btn{margin-top:8px;}
+.spin{display:inline-block;width:15px;height:15px;border:2.5px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite;vertical-align:middle;margin-right:6px;}
+@keyframes sp{to{transform:rotate(360deg);}}
+.swl{text-align:center;margin-top:14px;font-size:12px;color:var(--text2);}
+.swl a{color:var(--blue);font-weight:800;text-decoration:none;cursor:pointer;}
+.fl2{text-align:right;margin-top:-4px;margin-bottom:11px;}
+.fl2 a{font-size:11px;color:var(--blue);font-weight:700;cursor:pointer;text-decoration:none;}
+.steps{display:flex;align-items:center;justify-content:center;gap:6px;margin-bottom:18px;}
+.sd{width:29px;height:29px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;transition:all .3s;}
+.sd.done{background:var(--green);color:#fff;}
+.sd.active{background:var(--blue);color:#fff;box-shadow:0 0 0 4px rgba(26,111,255,.2);}
+.sd.pend{background:rgba(255,255,255,.08);color:var(--text3);}
+.sl2{flex:1;height:2px;background:var(--border);border-radius:1px;max-width:42px;}
+.sl2.done{background:var(--green);}
+.back{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:700;color:var(--text2);cursor:pointer;margin-bottom:14px;background:none;border:none;font-family:'Nunito';transition:color .18s;width:fit-content;}
+.back:hover{color:var(--text);}
+.ben{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:16px;}
+.bc{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:10px;padding:8px 10px;display:flex;align-items:center;gap:6px;font-size:10px;font-weight:700;color:var(--text2);}
+.tease{background:rgba(245,166,35,.08);border:1px solid rgba(245,166,35,.2);border-radius:12px;padding:12px;margin-bottom:14px;display:flex;align-items:center;gap:10px;}
+.tt{font-size:12px;font-weight:800;color:var(--gold);}
+.ts{font-size:10px;color:var(--text2);margin-top:1px;}
+/* demo accounts */
+.demo{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:14px;}
+.demo-ttl{font-size:9px;font-weight:800;color:var(--text3);letter-spacing:1px;margin-bottom:9px;text-transform:uppercase;}
+.du{display:flex;align-items:center;gap:9px;padding:7px 8px;border-radius:8px;cursor:pointer;transition:background .15s;margin-bottom:3px;}
+.du:hover{background:rgba(255,255,255,.05);}
+.du:last-child{margin-bottom:0;}
+.dav{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0;}
+.dn{font-size:11px;font-weight:700;}
+.de{font-size:9px;color:var(--text3);}
+.df{font-size:10px;font-weight:700;color:var(--blue);}
+/* success */
+.succ{text-align:center;padding:6px 0;}
+.sanim{font-size:54px;animation:pop .5s cubic-bezier(.34,1.5,.64,1) both;display:block;margin-bottom:12px;}
+@keyframes pop{from{transform:scale(0);}to{transform:scale(1);}}
+.sh{font-family:'Bebas Neue';font-size:24px;letter-spacing:2px;margin-bottom:6px;}
+.sp{font-size:11px;color:var(--text2);line-height:1.6;margin-bottom:16px;}
+.sc{background:rgba(0,184,124,.08);border:1px solid rgba(0,184,124,.2);border-radius:11px;padding:12px;margin-bottom:14px;text-align:left;}
+.sr{display:flex;justify-content:space-between;padding:4px 0;}
+.slb{font-size:10px;color:var(--text2);}
+.sv{font-size:10px;font-weight:800;color:var(--green);}
+.footer{text-align:center;margin-top:16px;font-size:9px;color:rgba(255,255,255,.18);line-height:1.6;animation:fu .4s .3s ease both;}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(90px);background:rgba(18,22,48,.97);border:1px solid var(--border2);color:#fff;padding:10px 18px;border-radius:28px;font-size:12px;font-weight:700;z-index:99999;transition:transform .32s cubic-bezier(.34,1.4,.64,1);display:flex;align-items:center;gap:7px;backdrop-filter:blur(14px);white-space:nowrap;box-shadow:0 8px 24px rgba(0,0,0,.5);}
+.toast.show{transform:translateX(-50%) translateY(0);}
+</style>
+</head>
+<body>
+<div class="bg"><div class="bgg"></div><div class="bggrid"></div><div class="orb orb1"></div><div class="orb orb2"></div><div class="orb orb3"></div>
+<div class="pt" style="left:8%;width:3px;height:3px;animation-duration:13s;animation-delay:0s;"></div>
+<div class="pt" style="left:25%;width:2px;height:2px;animation-duration:17s;animation-delay:-5s;"></div>
+<div class="pt" style="left:48%;width:4px;height:4px;animation-duration:11s;animation-delay:-9s;opacity:.1;"></div>
+<div class="pt" style="left:70%;width:3px;height:3px;animation-duration:15s;animation-delay:-3s;"></div>
+<div class="pt" style="left:88%;width:2px;height:2px;animation-duration:19s;animation-delay:-12s;"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div class="wrap container px-2">
+  <div class="logo">
+    <div class="lhex"><span>W</span></div>
+    <div class="lname">Win<em>Hub</em></div>
+    <div class="ltag">India's #1 Betting & Investment Platform</div>
+  </div>
+  <div class="trust">
+    <div class="tc">🔒 SSL Secured</div>
+    <div class="tc">⚡ Instant UPI</div>
+    <div class="tc">🏆 5L+ Users</div>
+    <div class="tc">✅ KYC Verified</div>
+  </div>
+
+  <div class="card" id="card">
+    <div class="tabrow" id="tabRow">
+      <button class="atab on" id="tL" onclick="sw('login')">Login</button>
+      <button class="atab" id="tR" onclick="sw('register')">Register</button>
+    </div>
+
+    <!-- LOGIN -->
+    <div class="pnl on" id="pL">
+      <div class="tease"><span style="font-size:24px">💰</span><div><div class="tt">Earn up to ₹20,998 in 30 days!</div><div class="ts">Login to activate your investment plan now</div></div></div>
+      <div class="demo">
+        <div class="demo-ttl">⚡ Quick Login — Demo Accounts</div>
+        <div class="du" onclick="fill('rahul@winhub.in','Demo@1234')">
+          <div class="dav" style="background:linear-gradient(135deg,#f5a623,#e8870a)">RS</div>
+          <div style="flex:1"><div class="dn">Rahul Sharma</div><div class="de">rahul@winhub.in · Gold VIP · ₹4,05,820</div></div>
+          <div class="df">Fill →</div>
+        </div>
+        <div class="du" onclick="fill('priya@winhub.in','Priya@1234')">
+          <div class="dav" style="background:linear-gradient(135deg,#c084fc,#9333ea)">PP</div>
+          <div style="flex:1"><div class="dn">Priya Patel</div><div class="de">priya@winhub.in · Silver VIP · ₹1,25,500</div></div>
+          <div class="df">Fill →</div>
+        </div>
+        <div class="du" onclick="fill('arjun@winhub.in','Arjun@1234')">
+          <div class="dav" style="background:linear-gradient(135deg,#22d3ee,#0891b2)">AK</div>
+          <div style="flex:1"><div class="dn">Arjun Kumar</div><div class="de">arjun@winhub.in · Platinum VIP · ₹12,50,000</div></div>
+          <div class="df">Fill →</div>
+        </div>
+      </div>
+      <div class="fg"><label class="fl">Mobile / Email</label><div class="iw"><span class="ii">📱</span><input class="inp" id="lId" type="text" placeholder="Mobile number or email" autocomplete="username"></div><div class="ferr" id="e-lId">Enter mobile or email</div></div>
+      <div class="fg"><label class="fl">Password</label><div class="iw"><span class="ii">🔑</span><input class="inp" id="lPw" type="password" placeholder="Enter password" autocomplete="current-password"><button class="eyeb" onclick="eye('lPw',this)">👁</button></div><div class="ferr" id="e-lPw">Enter your password</div></div>
+      <div class="fl2"><a onclick="showFgt()">Forgot Password?</a></div>
+      <button class="btn" id="btnL" onclick="doLogin()">Login to WinHub →</button>
+      <div class="dvd"><div class="dl"></div><div class="dt">OR CON TINUE WITH</div><div class="dl"></div></div>
+      <div class="srow">
+        <button class="sb2" onclick="socAuth('Google')">🔵 Google</button>
+        <button class="sb2" onclick="socAuth('Facebook')">📘 Facebook</button>
+        <button class="sb2" onclick="socAuth('OTP')">📱 OTP</button>
+      </div>
+      <div class="swl">New here? <a onclick="sw('register')">Register Free →</a></div>
+    </div>
+
+    <!-- REGISTER -->
+    <div class="pnl" id="pR">
+      <div class="steps"><div class="sd active" id="d1">1</div><div class="sl2" id="l1"></div><div class="sd pend" id="d2">2</div><div class="sl2" id="l2"></div><div class="sd pend" id="d3">3</div></div>
+      <!-- S1 -->
+      <div id="s1">
+        <div class="ben"><div class="bc">💸 Daily payouts</div><div class="bc">🎁 ₹50 welcome bonus</div><div class="bc">🤝 Referral earnings</div><div class="bc">⚡ Instant withdrawal</div></div>
+        <div class="fg"><label class="fl">Full Name</label><div class="iw"><span class="ii">👤</span><input class="inp" id="rN" type="text" placeholder="Enter full name" autocomplete="name"></div><div class="ferr" id="e-rN">Enter your full name</div></div>
+        <div class="fg"><label class="fl">Mobile Number</label><div class="prow"><div class="cc">🇮🇳 +91</div><div class="iw" style="flex:1"><span class="ii">📱</span><input class="inp" id="rP" type="tel" placeholder="10-digit number" maxlength="10" autocomplete="tel"></div></div><div class="ferr" id="e-rP">Enter valid 10-digit mobile</div></div>
+        <div class="fg"><label class="fl">Email</label><div class="iw"><span class="ii">✉️</span><input class="inp" id="rE" type="email" placeholder="your@email.com" autocomplete="email"></div><div class="ferr" id="e-rE">Enter valid email address</div></div>
+        <div class="fg"><label class="fl">Date of Birth</label><div class="iw"><span class="ii">📅</span><input class="inp" id="rD" type="date" style="color-scheme:dark;padding-left:41px;"></div><div class="ferr" id="e-rD">Must be 18 or older</div></div>
+        <button class="btn" href="#" onclick="rNext(2)">Continue →</button>
+        <div class="swl">Have account? <a onclick="sw('login')">Login</a></div>
+      </div>
+      <!-- S2 -->
+      <div id="s2" style="display:none">
+        <button class="back" onclick="rGo(1)">← Back</button>
+        <div class="fg"><label class="fl">Create Password</label><div class="iw"><span class="ii">🔑</span><input class="inp" id="rPw" type="password" placeholder="Min 8 characters" oninput="str(this.value,'sf1','sl1')" autocomplete="new-password"><button class="eyeb" onclick="eye('rPw',this)">👁</button></div><div class="sb"><div class="sf" id="sf1"></div></div><div class="sl" id="sl1"></div><div class="ferr" id="e-rPw">Min 8 characters required</div></div>
+        <div class="fg"><label class="fl">Confirm Password</label><div class="iw"><span class="ii">🔒</span><input class="inp" id="rPw2" type="password" placeholder="Re-enter password" autocomplete="new-password"><button class="eyeb" onclick="eye('rPw2',this)">👁</button></div><div class="ferr" id="e-rPw2">Passwords do not match</div></div>
+        <div class="fg"><label class="fl">Referral Code <span style="color:var(--text3);text-transform:none;font-weight:600;font-size:9px">(Optional — earn +₹50 bonus)</span></label><div class="iw"><span class="ii">🎟</span><input class="inp" id="rRef" type="text" placeholder="e.g. WINREF-RS001" oninput="chkRef(this.value)" style="text-transform:uppercase;"><span class="reftag" id="rtag">✓ Valid</span></div></div>
+        <div class="crow"><div class="cbox" id="ck1" onclick="ck('ck1')"></div><div class="ctxt">I agree to the <a href="#" onclick="toast('📄','Opening Terms…')">Terms & Conditions</a> and <a href="#" onclick="toast('📄','Opening Privacy Policy…')">Privacy Policy</a></div></div>
+        <div class="crow"><div class="cbox on" id="ck2" onclick="ck('ck2')"></div><div class="ctxt">I confirm I am 18+ and betting/investing is legal in my state</div></div>
+        <button class="btn" id="btnCreate" onclick="rNext(3)">Create Account →</button>
+      </div>
+      <!-- S3 OTP -->
+      <div id="s3" style="display:none">
+        <div style="text-align:center;margin-bottom:16px;"><div style="font-size:36px;margin-bottom:7px;">📱</div><div style="font-size:14px;font-weight:800;margin-bottom:4px;">Verify Your Number</div><div style="font-size:11px;color:var(--text2);line-height:1.6;">OTP sent to +91 <b id="otpNum">XXXXXXXXXX</b></div><div style="font-size:10px;color:var(--gold);margin-top:3px;font-weight:700;">💡 Any 6 digits work in demo mode</div></div>
+        <div class="orow">
+          <input class="oi" id="o0" maxlength="1" oninput="oi(this,0)" onkeydown="ok(event,0)" type="number" inputmode="numeric">
+          <input class="oi" id="o1" maxlength="1" oninput="oi(this,1)" onkeydown="ok(event,1)" type="number" inputmode="numeric">
+          <input class="oi" id="o2" maxlength="1" oninput="oi(this,2)" onkeydown="ok(event,2)" type="number" inputmode="numeric">
+          <input class="oi" id="o3" maxlength="1" oninput="oi(this,3)" onkeydown="ok(event,3)" type="number" inputmode="numeric">
+          <input class="oi" id="o4" maxlength="1" oninput="oi(this,4)" onkeydown="ok(event,4)" type="number" inputmode="numeric">
+          <input class="oi" id="o5" maxlength="1" oninput="oi(this,5)" onkeydown="ok(event,5)" type="number" inputmode="numeric">
+        </div>
+        <div style="text-align:center;font-size:11px;color:var(--text2);margin-bottom:14px;">Didn't receive? <a style="color:var(--blue);font-weight:700;cursor:pointer" onclick="resend()">Resend OTP</a><div id="tmr" style="font-size:9px;color:var(--text3);margin-top:2px;"></div></div>
+        <button class="btn" id="btnOtp" onclick="verOtp()">Verify & Create Account →</button>
+        <button class="back" onclick="rGo(2)" style="margin:10px auto 0;display:flex;">← Change Details</button>
+      </div>
+    </div>
+
+    <!-- FORGOT -->
+    <div class="pnl" id="pF">
+      <div id="fp1">
+        <button class="back" onclick="showPanel('login')">← Back to Login</button>
+        <div style="margin-bottom:16px;"><div style="font-size:22px;margin-bottom:6px;">🔐</div><div style="font-size:16px;font-weight:900;margin-bottom:4px;">Reset Password</div><div style="font-size:11px;color:var(--text2);line-height:1.6;">Enter your registered mobile or email.</div></div>
+        <div class="fg"><label class="fl">Mobile / Email</label><div class="iw"><span class="ii">📱</span><input class="inp" id="fId" type="text" placeholder="Registered mobile or email"></div><div class="ferr" id="e-fId">Enter mobile or email</div></div>
+        <button class="btn" id="btnFgt" onclick="sendFgt()">Send Reset OTP →</button>
+      </div>
+      <div id="fp2" style="display:none">
+        <button class="back" onclick="fpGo(1)">← Back</button>
+        <div style="text-align:center;margin-bottom:16px;"><div style="font-size:30px;margin-bottom:7px;">📲</div><div style="font-size:14px;font-weight:800;margin-bottom:4px;">Enter Reset OTP</div><div style="font-size:10px;color:var(--gold)">Any 6 digits (demo mode)</div></div>
+        <div class="orow">
+          <input class="oi" id="f0" maxlength="1" oninput="fi(this,0)" onkeydown="fk(event,0)" type="number" inputmode="numeric">
+          <input class="oi" id="f1" maxlength="1" oninput="fi(this,1)" onkeydown="fk(event,1)" type="number" inputmode="numeric">
+          <input class="oi" id="f2" maxlength="1" oninput="fi(this,2)" onkeydown="fk(event,2)" type="number" inputmode="numeric">
+          <input class="oi" id="f3" maxlength="1" oninput="fi(this,3)" onkeydown="fk(event,3)" type="number" inputmode="numeric">
+          <input class="oi" id="f4" maxlength="1" oninput="fi(this,4)" onkeydown="fk(event,4)" type="number" inputmode="numeric">
+          <input class="oi" id="f5" maxlength="1" oninput="fi(this,5)" onkeydown="fk(event,5)" type="number" inputmode="numeric">
+        </div>
+        <button class="btn" onclick="verFgt()">Verify OTP →</button>
+      </div>
+      <div id="fp3" style="display:none">
+        <button class="back" onclick="fpGo(2)">← Back</button>
+        <div style="margin-bottom:16px;"><div style="font-size:24px;margin-bottom:6px;">🔏</div><div style="font-size:15px;font-weight:900;margin-bottom:4px;">Set New Password</div></div>
+        <div class="fg"><label class="fl">New Password</label><div class="iw"><span class="ii">🔑</span><input class="inp" id="np1" type="password" placeholder="Min 8 characters" oninput="str(this.value,'sf2','sl2')" autocomplete="new-password"><button class="eyeb" onclick="eye('np1',this)">👁</button></div><div class="sb"><div class="sf" id="sf2"></div></div><div class="sl" id="sl2"></div><div class="ferr" id="e-np1">Min 8 characters</div></div>
+        <div class="fg"><label class="fl">Confirm Password</label><div class="iw"><span class="ii">🔒</span><input class="inp" id="np2" type="password" placeholder="Re-enter" autocomplete="new-password"><button class="eyeb" onclick="eye('np2',this)">👁</button></div><div class="ferr" id="e-np2">Passwords don't match</div></div>
+        <button class="btn" id="btnRst" onclick="doReset()">Reset Password →</button>
+      </div>
+    </div>
+  </div><!-- /card -->
+
+  <div class="footer">For entertainment & investment purposes · 18+ only · Please play responsibly<br><b style="color:rgba(255,255,255,.3)">WinHub Technologies Pvt. Ltd.</b></div>
+</div>
+
+<script>
+window.addEventListener('DOMContentLoaded', () => { if (WH.isLoggedIn()) window.location.href = 'winhub-dashboard.html'; });
+
+let regD = {}, tmrIv = null;
+
+// Panel switching
+function showPanel(p) {
+  ['pL','pR','pF'].forEach(id => document.getElementById(id).classList.remove('on'));
+  document.getElementById('tabRow').style.display = p==='forgot'?'none':'flex';
+  const map = {login:'pL',register:'pR',forgot:'pF'};
+  document.getElementById(map[p]).classList.add('on');
+  document.getElementById('tL').classList.toggle('on', p==='login');
+  document.getElementById('tR').classList.toggle('on', p==='register');
+}
+function sw(t) { showPanel(t); }
+function showFgt() { showPanel('forgot'); fpGo(1); }
+
+// Quick fill
+function fill(em, pw) { document.getElementById('lId').value=em; document.getElementById('lPw').value=pw; toast('👤','Credentials filled — press Login!'); }
+
+// Login
+function doLogin() {
+  const id=v('lId'), pw=v('lPw'); let ok=true;
+  if(!id){er('lId',true);ok=false;}else er('lId',false);
+  if(!pw){er('lPw',true);ok=false;}else er('lPw',false);
+  if(!ok) return;
+  ld('btnL',true,'Signing in…');
+  setTimeout(()=>{
+    const user=WH.findUser(id,pw);
+    ld('btnL',false,'Login to WinHub →');
+    if(user){ WH.login(user); toast('✅',`Welcome back, ${user.name.split(' ')[0]}!`); setTimeout(()=>window.location.href='winhub-dashboard.html',800); }
+    else{ er('lPw',true,'Invalid credentials. Use a demo account above ↑'); document.getElementById('lPw').classList.add('err'); shake(); }
+  },1300);
+}
+
+// Social
+function socAuth(p) {
+  toast('⏳',`Connecting with ${p}…`);
+  if(p==='OTP'){ 
+    // open register and show password step (no OTP flow)
+    setTimeout(()=>{ sw('register'); rGo(2); toast('ℹ️','Proceed with password to create account'); },1000); 
+    return; 
+  }
+  setTimeout(()=>{ const u=WH.findUser('rahul@winhub.in','Demo@1234'); if(u){ WH.login(u); window.location.href='winhub-dashboard.html'; } },1400);
+}
+
+// Register steps
+function rNext(n) {
+  if(n===2){
+    const nm=v('rN'),ph=v('rP'),em=v('rE'),dob=document.getElementById('rD').value; let ok=true;
+    if(!nm||nm.length<2){er('rN',true);ok=false;}else er('rN',false);
+    if(!ph||!/^[6-9]\d{9}$/.test(ph)){er('rP',true);ok=false;}else er('rP',false);
+    if(!em||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)){er('rE',true);ok=false;}else er('rE',false);
+    if(!dob){er('rD',true,'Required');ok=false;}else{const age=Math.floor((Date.now()-new Date(dob))/(365.25*24*3600*1000));if(age<18){er('rD',true,'Must be 18+');ok=false;}else er('rD',false);}
+    if(!ok) return;
+    regD={name:nm,phone:ph,email:em,dob};
+    rGo(2);
+  } else if(n===3){
+    // create account immediately using password (no OTP)
+    const pw=v('rPw'),pw2=v('rPw2'); let ok=true;
+    if(!pw||pw.length<8){er('rPw',true);ok=false;}else er('rPw',false);
+    if(pw!==pw2){er('rPw2',true);ok=false;}else er('rPw2',false);
+    if(!document.getElementById('ck1').classList.contains('on')){toast('⚠️','Accept Terms & Conditions');return;}
+    if(!ok) return;
+    regD.password=pw; regD.refCode=v('rRef').toUpperCase();
+    // show create loading and register
+    ld('btnCreate',true,'Creating account…');
+    setTimeout(()=>{
+      const r = WH.registerUser(regD);
+      ld('btnCreate',false,'Create Account →');
+      if(r.ok){ WH.login(r.user); showRegSucc(r.user); }
+      else toast('❌', r.msg || 'Registration failed');
+    },1200);
+  }
+}
+function rGo(n) {
+  [1,2,3].forEach(i=>document.getElementById('s'+i).style.display=i===n?'block':'none');
+  ['d1','d2','d3'].forEach((id,i)=>{ const e=document.getElementById(id); e.className='sd '+(i+1<n?'done':i+1===n?'active':'pend'); e.textContent=i+1<n?'✓':i+1; });
+  ['l1','l2'].forEach((id,i)=>{ document.getElementById(id).className='sl2'+(i+1<n?' done':''); });
+}
+function oi(el,i){ el.value=el.value.slice(-1); el.classList.toggle('filled',!!el.value); if(el.value&&i<5) document.getElementById('o'+(i+1)).focus(); }
+function ok2(e,i){ if(e.key==='Backspace'&&!document.getElementById('o'+i).value&&i>0) document.getElementById('o'+(i-1)).focus(); }
+// alias
+function ok(e,i){ok2(e,i);}
+function getotp(px){ return [0,1,2,3,4,5].map(i=>document.getElementById(px+i)?.value||'').join(''); }
+function verOtp(){
+  if(getotp('o').length<6){toast('⚠️','Enter all 6 digits');return;}
+  ld('btnOtp',true,'Verifying…');
+  setTimeout(()=>{
+    ld('btnOtp',false,'Verify & Create Account →');
+    const r=WH.registerUser(regD);
+    if(r.ok){ WH.login(r.user); showRegSucc(r.user); }
+    else toast('❌',r.msg);
+  },1400);
+}
+function showRegSucc(u){
+  clearInterval(tmrIv);
+  const bonus=regD.refCode?100:50;
+  document.getElementById('pR').innerHTML=`<div class="succ"><span class="sanim">🎊</span><div class="sh">ACCOUNT CREATED!</div><div class="sp">Welcome, <b>${u.name}</b>!<br>${regD.refCode?'Referral bonus applied. ':''}<b style="color:var(--gold)">₹${bonus} bonus</b> added to wallet!</div><div class="sc"><div class="sr"><span class="slb">Name</span><span class="sv">${u.name}</span></div><div class="sr"><span class="slb">Mobile</span><span class="sv">+91 ${u.phone}</span></div><div class="sr"><span class="slb">VIP Level</span><span class="sv">${u.vipLevel}</span></div><div class="sr"><span class="slb">Balance</span><span class="sv">₹${bonus}</span></div><div class="sr"><span class="slb">Ref Code</span><span class="sv">${u.referralCode}</span></div></div><button class="btn" onclick="window.location.href='winhub-dashboard.html'">Go to Dashboard →</button><button class="btn gold" onclick="window.location.href='investment-plans.html'" style="margin-top:8px">Activate Investment Plan 💰</button></div>`;
+  toast('🎉','Welcome to WinHub!');
+}
+function resend(){ [0,1,2,3,4,5].forEach(i=>{const e=document.getElementById('o'+i);if(e){e.value='';e.classList.remove('filled');}});document.getElementById('o0')?.focus();clearInterval(tmrIv);startTmr();toast('📱','OTP resent!');}
+function startTmr(){ let s=60;const el=document.getElementById('tmr');if(!el)return;el.textContent=`Resend in ${s}s`;clearInterval(tmrIv);tmrIv=setInterval(()=>{s--;if(el)el.textContent=s>0?`Resend in ${s}s`:'';if(s<=0)clearInterval(tmrIv);},1000);}
+
+// Forgot
+function fpGo(n){ [1,2,3].forEach(i=>document.getElementById('fp'+i).style.display=i===n?'block':'none'); }
+function sendFgt(){ const id=v('fId');if(!id){er('fId',true);return;}er('fId',false);ld('btnFgt',true,'Sending OTP…');setTimeout(()=>{ld('btnFgt',false,'Send Reset OTP →');toast('📱','OTP sent!');fpGo(2);document.getElementById('f0').focus();},1300);}
+function fi(el,i){ el.value=el.value.slice(-1); el.classList.toggle('filled',!!el.value); if(el.value&&i<5) document.getElementById('f'+(i+1)).focus(); }
+function fk(e,i){ if(e.key==='Backspace'&&!document.getElementById('f'+i).value&&i>0) document.getElementById('f'+(i-1)).focus(); }
+function verFgt(){ if(getotp('f').length<6){toast('⚠️','Enter all 6 digits');return;}toast('✅','OTP verified!');setTimeout(()=>fpGo(3),600);}
+function doReset(){ const p1=v('np1'),p2=v('np2');let ok=true;if(!p1||p1.length<8){er('np1',true);ok=false;}else er('np1',false);if(p1!==p2){er('np2',true);ok=false;}else er('np2',false);if(!ok)return;ld('btnRst',true,'Resetting…');setTimeout(()=>{ld('btnRst',false,'Reset Password →');toast('🔐','Password reset! Please login.');setTimeout(()=>showPanel('login'),900);},1400);}
+
+// Helpers
+function v(id){ return (document.getElementById(id)?.value||'').trim(); }
+function er(id,show,msg){ const e=document.getElementById('e-'+id),f=document.getElementById(id);if(e){e.classList.toggle('on',show);if(msg)e.textContent=msg;}if(f)f.classList.toggle('err',show); }
+function ld(id,on,txt){ const b=document.getElementById(id);if(!b)return;b.innerHTML=on?`<span class="spin"></span>${txt}`:txt;b.classList.toggle('loading',on); }
+function eye(id,btn){ const i=document.getElementById(id);i.type=i.type==='password'?'text':'password';btn.textContent=i.type==='password'?'👁':'🙈'; }
+function str(val,fid='sf1',lid='sl1'){ let s=0;if(val.length>=8)s++;if(/[A-Z]/.test(val))s++;if(/[0-9]/.test(val))s++;if(/[^A-Za-z0-9]/.test(val))s++;const c=[{w:'0%',c:'transparent',t:''},{w:'25%',c:'var(--red)',t:'Weak'},{w:'50%',c:'var(--gold)',t:'Fair'},{w:'75%',c:'#60a5fa',t:'Good'},{w:'100%',c:'var(--green)',t:'Strong 💪'}][s];const f=document.getElementById(fid),l=document.getElementById(lid);if(f){f.style.width=c.w;f.style.background=c.c;}if(l){l.textContent=c.t;l.style.color=c.c;} }
+function chkRef(val){ const t=document.getElementById('rtag');t.classList.toggle('on',val.length>=6);if(val.length>=6)toast('🎁','Referral code applied! Bonus unlocked'); }
+function ck(id){ document.getElementById(id).classList.toggle('on'); }
+function shake(){ const c=document.getElementById('card');['-8px','8px','-5px','5px','0px'].forEach((x,i)=>setTimeout(()=>c.style.transform=`translateX(${x})`,i*65)); }
+let tT;
+function toast(icon,msg){ clearTimeout(tT);const el=document.getElementById('toast');el.innerHTML=`<span>${icon}</span><span>${msg}</span>`;el.classList.add('show');tT=setTimeout(()=>el.classList.remove('show'),2800); }
+</script>
+<!-- Bootstrap JS bundle (optional for some components) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-EVSTQN3/azprG1Anm+Y6ZbQ7Q5m3p1K9r6e2s4f7t8u9v0x1y2z3a4b5c6d7e8f9" crossorigin="anonymous"></script>
+</body>
+</html>
